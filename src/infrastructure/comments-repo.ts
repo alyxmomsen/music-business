@@ -50,13 +50,9 @@ export class JsonCommentsRepo implements ICommentsRepo {
         for (const state of this.items.values()) {
             const t = state.target;
             if (
-                t.type === 'tracked-item' &&
-                t.trackedItemId === trackedItemId
-            ) {
-                result.push(Comment.fromState(state));
-            } else if (
-                t.type === 'fragment-range' &&
-                t.trackedItemId === trackedItemId
+                (t.type === 'tracked-item' && t.trackedItemId === trackedItemId) ||
+                (t.type === 'fragment-range' && t.trackedItemId === trackedItemId) ||
+                (t.type === 'fragment' && t.trackedItemId === trackedItemId)  // ← новое
             ) {
                 result.push(Comment.fromState(state));
             }

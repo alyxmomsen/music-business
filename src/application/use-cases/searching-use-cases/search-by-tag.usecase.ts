@@ -3,7 +3,7 @@
 export class SearchBytagUseCase {
 
     
-
+    
     constructor () {
 
     }
