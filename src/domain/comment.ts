@@ -10,8 +10,9 @@ export type TCommentTarget =
           quote: string;
       }
     | {
-          type: 'tag';
-          tagId: string;
+          type: 'fragment';
+          trackedItemId: string;
+          fragmentId: string;
       }
     | {
           type: 'tracked-item';

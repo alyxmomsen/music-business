@@ -86,9 +86,9 @@ export class JsonTagLinksRepo implements ITagLinksRepo {
         for (const [id, state] of this.items.entries()) {
             const t = state.target;
             if (
-                (t.type === 'tracked-item' &&
-                    t.trackedItemId === trackedItemId) ||
-                (t.type === 'fragment' && t.trackedItemId === trackedItemId)
+                (t.type === 'tracked-item' && t.trackedItemId === trackedItemId) ||
+                (t.type === 'fragment' && t.trackedItemId === trackedItemId) ||
+                (t.type === 'fragment-range' && t.trackedItemId === trackedItemId)  // ← новое
             ) {
                 this.items.delete(id);
             }
@@ -99,7 +99,10 @@ export class JsonTagLinksRepo implements ITagLinksRepo {
     async deleteByFragment(fragmentId: string): Promise<void> {
         for (const [id, state] of this.items.entries()) {
             const t = state.target;
-            if (t.type === 'fragment' && t.fragmentId === fragmentId) {
+            if (
+                (t.type === 'fragment' && t.fragmentId === fragmentId) ||
+                (t.type === 'fragment-range' && t.fragmentId === fragmentId)  // ← новое
+            ) {
                 this.items.delete(id);
             }
         }

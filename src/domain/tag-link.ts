@@ -13,6 +13,14 @@ export type TTagLinkTarget =
     | {
           type: 'comment';
           commentId: string;
+      }
+    | {
+          type: 'fragment-range';
+          trackedItemId: string;
+          fragmentId: string;
+          start: number;
+          end: number;
+          quote: string;
       };
 
 export type TTagLinkState = {

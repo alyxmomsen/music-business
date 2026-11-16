@@ -29,6 +29,7 @@ const bootstrapFactory = function (
         tagsController,
         authController,
         profilesController,
+        annotationsController,
         authMiddleware,
     } = appContainer;
 
@@ -38,6 +39,7 @@ const bootstrapFactory = function (
         tagsController,
         authController,
         profilesController,
+        annotationsController,
         authMiddleware
     );
 

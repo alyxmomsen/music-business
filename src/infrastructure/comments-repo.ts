@@ -100,10 +100,9 @@ export class JsonCommentsRepo implements ICommentsRepo {
         for (const [id, state] of this.items.entries()) {
             const t = state.target;
             if (
-                (t.type === 'tracked-item' &&
-                    t.trackedItemId === trackedItemId) ||
-                (t.type === 'fragment-range' &&
-                    t.trackedItemId === trackedItemId)
+                (t.type === 'tracked-item' && t.trackedItemId === trackedItemId) ||
+                (t.type === 'fragment-range' && t.trackedItemId === trackedItemId) ||
+                (t.type === 'fragment' && t.trackedItemId === trackedItemId)  
             ) {
                 this.items.delete(id);
             }
@@ -114,7 +113,10 @@ export class JsonCommentsRepo implements ICommentsRepo {
     async deleteByFragment(fragmentId: string): Promise<void> {
         for (const [id, state] of this.items.entries()) {
             const t = state.target;
-            if (t.type === 'fragment-range' && t.fragmentId === fragmentId) {
+            if (
+                (t.type === 'fragment-range' && t.fragmentId === fragmentId) ||
+                (t.type === 'fragment' && t.fragmentId === fragmentId)  
+            ) {
                 this.items.delete(id);
             }
         }

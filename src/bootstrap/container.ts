@@ -42,6 +42,10 @@ import { ProfilesController } from '../presentation/controllers/profiles.control
 
 import { UpdateTagDescriptionUseCase } from '../application/use-cases/tags/update-tag-description.use-case';
 
+import { AddAnnotationUseCase } from '../application/use-cases/annotations/add-annotation.use-case';
+import { AnnotationsOrchestrator } from '../application/annotations-orchestrator';
+import { AnnotationsController } from '../presentation/controllers/annotations.controller';
+
 export interface AppConfig {
     trackedItemsPath: string;
     commentsPath: string;
@@ -58,8 +62,9 @@ export interface AppContainer {
     commentsController: CommentsController;
     tagsController: TagsController;
     authController: AuthController;
-    authMiddleware: RequestHandler;
     profilesController: ProfilesController;
+    annotationsController: AnnotationsController;  // ← новое
+    authMiddleware: RequestHandler;
 }
 
 export async function bootstrap(config: AppConfig): Promise<AppContainer> {
@@ -95,8 +100,16 @@ export async function bootstrap(config: AppConfig): Promise<AppContainer> {
 
     // ---------- Use cases: comments ----------
 
+    const addCommentUseCase = new AddCommentUseCase(commentsRepo, uniqueIdGenerator);
+
+    const addTagToTargetUseCase = new AddTagToTargetUseCase(
+        tagsRepo,
+        tagLinksRepo,
+        uniqueIdGenerator
+    );
+
     const commentsOrchestrator = new CommentsOrchestrator(
-        new AddCommentUseCase(commentsRepo, uniqueIdGenerator),
+        addCommentUseCase,
         new UpdateCommentUseCase(commentsRepo),
         new DeleteCommentUseCase(commentsRepo, tagLinksRepo),
         new GetCommentsByTargetUseCase(commentsRepo),
@@ -106,8 +119,9 @@ export async function bootstrap(config: AppConfig): Promise<AppContainer> {
 
     // ---------- Use cases: tags ----------
 
+    
     const tagsOrchestrator = new TagsOrchestrator(
-        new AddTagToTargetUseCase(tagsRepo, tagLinksRepo, uniqueIdGenerator),
+        addTagToTargetUseCase,
         new RemoveTagFromTargetUseCase(tagLinksRepo),
         new DeleteTagUseCase(tagsRepo, tagLinksRepo),
         new GetTagsForTargetUseCase(tagsRepo, tagLinksRepo),
@@ -118,6 +132,14 @@ export async function bootstrap(config: AppConfig): Promise<AppContainer> {
         new UpdateTagDescriptionUseCase(tagsRepo)
     );
     const tagsController = new TagsController(tagsOrchestrator);
+
+
+    const addAnnotationUseCase = new AddAnnotationUseCase(
+        addCommentUseCase,
+        addTagToTargetUseCase
+    );
+    const annotationsOrchestrator = new AnnotationsOrchestrator(addAnnotationUseCase);
+    const annotationsController = new AnnotationsController(annotationsOrchestrator);
 
     // ---------- Init ----------
 
@@ -198,7 +220,8 @@ export async function bootstrap(config: AppConfig): Promise<AppContainer> {
         commentsController,
         tagsController,
         authController,
-        authMiddleware,
         profilesController,
+        annotationsController,
+        authMiddleware,
     };
 }

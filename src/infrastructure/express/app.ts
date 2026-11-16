@@ -17,13 +17,17 @@ import { createAuthRouter } from './routes/auth.routes';
 import { ProfilesController } from '../../presentation/controllers/profiles.controller';
 import { createProfilesRouter } from './routes/profiles.routes';
 
+import { AnnotationsController } from '../../presentation/controllers/annotations.controller';
+import { createAnnotationsRouter } from './routes/annotations.routes';
+
 export function createApp(
     listItemController: TrackedItemsListController,
     commentsController: CommentsController,
     tagsController: TagsController,
     authController: AuthController,
     profilesController: ProfilesController,
-    authMiddleware: RequestHandler
+    annotationsController: AnnotationsController,
+    authMiddleware: RequestHandler,
 ) {
     const app = express();
 
@@ -55,11 +59,18 @@ export function createApp(
     );
 
     app.use(
+        '/api/annotations',
+        authMiddleware,
+        createAnnotationsRouter(annotationsController)
+    );
+    
+    app.use(
         (err: Error, _req: Request, res: Response, _next: NextFunction) => {
             console.error('[error]', err);
             res.status(500).json({ error: 'Internal Server Error' });
         }
     );
+
 
     return app;
 }
