@@ -114,10 +114,21 @@ export class JsonTagLinksRepo implements ITagLinksRepo {
         for (const state of this.items.values()) {
             const t = state.target;
             if (
-                (t.type === 'tracked-item' &&
-                    t.trackedItemId === trackedItemId) ||
-                (t.type === 'fragment' && t.trackedItemId === trackedItemId)
+                (t.type === 'tracked-item' && t.trackedItemId === trackedItemId) ||
+                (t.type === 'fragment' && t.trackedItemId === trackedItemId) ||
+                (t.type === 'fragment-range' && t.trackedItemId === trackedItemId)  // ← новое
             ) {
+                result.push(TagLink.fromState(state));
+            }
+        }
+        return result;
+    }
+
+    async getByCommentIds(commentIds: TUniqueId[]): Promise<TagLink[]> {
+        const set = new Set(commentIds);
+        const result: TagLink[] = [];
+        for (const state of this.items.values()) {
+            if (state.target.type === 'comment' && set.has(state.target.commentId)) {
                 result.push(TagLink.fromState(state));
             }
         }

@@ -9,6 +9,10 @@ import { GetAllTagsUseCase } from './use-cases/tags/get-all-tags.use-case';
 import { GetTagLinksByTrackedItemUseCase } from './use-cases/tags/get-tag-links-by-tracked-item.use-case';
 import { GetTagByIdUseCase } from './use-cases/tags/get-tag-by-id.use-case';
 import { UpdateTagDescriptionUseCase } from './use-cases/tags/update-tag-description.use-case';
+import {
+    GetTagsForCommentsUseCase,
+    ICommentTags,
+} from './use-cases/tags/get-tags-for-comments.use-case';
 
 export class TagsOrchestrator {
     constructor(
@@ -23,6 +27,8 @@ export class TagsOrchestrator {
         private getTagById: GetTagByIdUseCase,
 
         private updateTagDescriptionUseCase: UpdateTagDescriptionUseCase,
+
+        private getTagsForCommentsUseCase: GetTagsForCommentsUseCase
     ) {}
 
     async add(
@@ -79,5 +85,9 @@ export class TagsOrchestrator {
         userId: string
     ): Promise<HashTag> {
         return this.updateTagDescriptionUseCase.execute(tagId, description, userId);
+    }
+
+    async getForComments(commentIds: string[]): Promise<ICommentTags[]> {
+        return this.getTagsForCommentsUseCase.execute(commentIds);
     }
 }

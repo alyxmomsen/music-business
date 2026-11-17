@@ -4,6 +4,7 @@ import { TUniqueId } from '../types/unique-id';
 export interface ITagsRepo {
     create(tag: HashTag): Promise<void>;
     getById(id: TUniqueId): Promise<HashTag | null>;
+    getByIds(ids: TUniqueId[]): Promise<HashTag[]>;
     getByNormalizedText(normalizedText: string): Promise<HashTag | null>;
     getAll(): Promise<HashTag[]>;
     update(tag: HashTag): Promise<void>;

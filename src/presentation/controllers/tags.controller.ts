@@ -171,4 +171,22 @@ export class TagsController {
             next(err);
         }
     };
+
+    getForComments = async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const { commentIds } = req.body as { commentIds?: string[] };
+            if (!Array.isArray(commentIds)) {
+                return res.status(400).json({ error: 'commentIds must be an array' });
+            }
+            const result = await this.orchestrator.getForComments(commentIds);
+            res.json(
+                result.map((r) => ({
+                    commentId: r.commentId,
+                    tags: r.tags.map((t) => t.getState()),
+                }))
+            );
+        } catch (err) {
+            next(err);
+        }
+    };
 }

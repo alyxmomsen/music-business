@@ -46,6 +46,8 @@ import { AddAnnotationUseCase } from '../application/use-cases/annotations/add-a
 import { AnnotationsOrchestrator } from '../application/annotations-orchestrator';
 import { AnnotationsController } from '../presentation/controllers/annotations.controller';
 
+import { GetTagsForCommentsUseCase } from '../application/use-cases/tags/get-tags-for-comments.use-case';
+
 export interface AppConfig {
     trackedItemsPath: string;
     commentsPath: string;
@@ -129,7 +131,8 @@ export async function bootstrap(config: AppConfig): Promise<AppContainer> {
         new GetAllTagsUseCase(tagsRepo),
         new GetTagLinksByTrackedItemUseCase(tagLinksRepo),
         new GetTagByIdUseCase(tagsRepo),
-        new UpdateTagDescriptionUseCase(tagsRepo)
+        new UpdateTagDescriptionUseCase(tagsRepo),
+        new GetTagsForCommentsUseCase(tagLinksRepo, tagsRepo),
     );
     const tagsController = new TagsController(tagsOrchestrator);
 

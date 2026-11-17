@@ -44,6 +44,15 @@ export class JsonTagsRepo implements ITagsRepo {
         return HashTag.fromState(state);
     }
 
+    async getByIds(ids: TUniqueId[]): Promise<HashTag[]> {
+        const result: HashTag[] = [];
+        for (const id of ids) {
+            const state = this.items.get(id);
+            if (state) result.push(HashTag.fromState(state));
+        }
+        return result;
+    }
+
     async getByNormalizedText(normalizedText: string): Promise<HashTag | null> {
         for (const state of this.items.values()) {
             if (state.normalizedText === normalizedText) {
