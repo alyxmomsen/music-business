@@ -127,6 +127,7 @@ export class TagsController {
             );
             res.json(
                 result.map((r) => ({
+                    linkId: r.linkId,
                     tag: r.tag.getState(),
                     target: r.target,
                 }))

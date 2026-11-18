@@ -68,13 +68,12 @@ export class TagsOrchestrator {
 
     async getForTrackedItem(
         trackedItemId: string
-    ): Promise<Array<{ tag: HashTag; target: TTagLinkTarget }>> {
-        const links =
-            await this.getTagLinksByTrackedItem.execute(trackedItemId);
-        const result: Array<{ tag: HashTag; target: TTagLinkTarget }> = [];
+    ): Promise<Array<{ linkId: string; tag: HashTag; target: TTagLinkTarget }>> {
+        const links = await this.getTagLinksByTrackedItem.execute(trackedItemId);
+        const result: Array<{ linkId: string; tag: HashTag; target: TTagLinkTarget }> = [];
         for (const link of links) {
             const tag = await this.getTagById.execute(link.tagId);
-            if (tag) result.push({ tag, target: link.target });
+            if (tag) result.push({ linkId: link.id, tag, target: link.target });
         }
         return result;
     }
