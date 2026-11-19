@@ -3,17 +3,39 @@ import { TTrackedItemTextFragmentState } from '../domain/tracked-item-fragment';
 import { ITrackedItemsListRepo } from '../domain/ports/tracked-items-list-repo';
 import { ICommentsRepo } from '../domain/ports/comments-repo';
 import { ITagLinksRepo } from '../domain/ports/tag-links-repo';
+import { ITagsRepo } from '../domain/ports/tags-repo';
 import { IUniqueIdGenerator } from '../domain/ports/uniqueIdGenerator';
 import { ToggleFragmentUseCase } from './use-cases/toggle-fragment-use-case';
+import {
+    SearchTrackedItemsUseCase,
+    ISearchTrackedItemsInput,
+    ISearchTrackedItemsResult,
+} from './use-cases/searching-use-cases/search-tracked-items.use-case';
 
 export class MainOrchestrator {
+    private searchUseCase: SearchTrackedItemsUseCase;
+
     constructor(
         private itemsListRepo: ITrackedItemsListRepo,
         private toggleFragmentUseCase: ToggleFragmentUseCase,
         private idGenerator: IUniqueIdGenerator,
         private commentsRepo: ICommentsRepo,
-        private tagLinksRepo: ITagLinksRepo
-    ) {}
+        private tagLinksRepo: ITagLinksRepo,
+        tagsRepo: ITagsRepo
+    ) {
+        this.searchUseCase = new SearchTrackedItemsUseCase(
+            itemsListRepo,
+            tagsRepo,
+            tagLinksRepo,
+            commentsRepo
+        );
+    }
+
+    async search(
+        input: ISearchTrackedItemsInput
+    ): Promise<ISearchTrackedItemsResult> {
+        return this.searchUseCase.execute(input);
+    }
 
     async getPage(
         page: number,

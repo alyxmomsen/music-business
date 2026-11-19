@@ -48,6 +48,7 @@ import { AnnotationsController } from '../presentation/controllers/annotations.c
 
 import { GetTagsForCommentsUseCase } from '../application/use-cases/tags/get-tags-for-comments.use-case';
 
+
 export interface AppConfig {
     trackedItemsPath: string;
     commentsPath: string;
@@ -96,7 +97,8 @@ export async function bootstrap(config: AppConfig): Promise<AppContainer> {
         toggleFragmentUseCase,
         uniqueIdGenerator,
         commentsRepo,
-        tagLinksRepo
+        tagLinksRepo,
+        tagsRepo
     );
     const setListController = new TrackedItemsListController(orchestrator);
 

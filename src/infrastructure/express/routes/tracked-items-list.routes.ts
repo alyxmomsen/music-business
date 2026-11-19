@@ -7,6 +7,7 @@ export function createTrackedItemsListRouter(
     const router = Router();
 
     router.get('/', controller.getPage);
+    router.get('/search', controller.search);
     router.post('/', controller.create);
     router.get('/:id', controller.getById);
     router.put('/:id', controller.update);

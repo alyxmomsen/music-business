@@ -51,6 +51,72 @@ export class TrackedItemsListController {
         }
     };
 
+    search = async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const page = Number(req.query.page ?? DEFAULT_PAGE);
+            const limit = Number(req.query.limit ?? DEFAULT_LIMIT);
+
+            if (!Number.isInteger(page) || page < 1) {
+                return res
+                    .status(400)
+                    .json({ error: 'page must be a positive integer' });
+            }
+            if (!Number.isInteger(limit) || limit < 1 || limit > MAX_LIMIT) {
+                return res.status(400).json({
+                    error: `limit must be between 1 and ${MAX_LIMIT}`,
+                });
+            }
+
+            const q =
+                typeof req.query.q === 'string' ? req.query.q : undefined;
+            const artist =
+                typeof req.query.artist === 'string'
+                    ? req.query.artist
+                    : undefined;
+
+            const tags =
+                typeof req.query.tags === 'string' && req.query.tags.trim()
+                    ? req.query.tags
+                          .split(',')
+                          .map((t) => t.trim())
+                          .filter(Boolean)
+                    : undefined;
+
+            const tagIds =
+                typeof req.query.tagIds === 'string' &&
+                req.query.tagIds.trim()
+                    ? req.query.tagIds
+                          .split(',')
+                          .map((t) => t.trim())
+                          .filter(Boolean)
+                    : undefined;
+
+            const result = await this.orchestrator.search({
+                q,
+                artist,
+                tags,
+                tagIds,
+                page,
+                limit,
+            });
+
+            res.json({
+                items: result.items.map(({ item, matchedTags }) => ({
+                    id: item.id,
+                    artistName: item.getArtistName(),
+                    title: item.getTitle(),
+                    progress: item.calculateProgress(),
+                    matchedTags,
+                })),
+                total: result.total,
+                page: result.page,
+                limit: result.limit,
+            });
+        } catch (err) {
+            next(err);
+        }
+    };
+
     getById = async (
         req: Request<IdParams>,
         res: Response,
