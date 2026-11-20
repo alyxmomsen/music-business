@@ -44,9 +44,9 @@ export class AddAnnotationUseCase {
             );
         }
 
-        const tagTarget: TTagLinkTarget = comment
-            ? { type: 'comment', commentId: comment.id }
-            : (input.target as TTagLinkTarget);
+        // Tags always attach to the annotation target (range / fragment / item),
+        // never to the comment. Tagging comments is a separate, explicit action.
+        const tagTarget = this.toTagLinkTarget(input.target);
 
         const createdTags: HashTag[] = [];
         for (const tagText of tags) {
@@ -59,5 +59,36 @@ export class AddAnnotationUseCase {
         }
 
         return { comment, tags: createdTags };
+    }
+
+    private toTagLinkTarget(target: TCommentTarget): TTagLinkTarget {
+        switch (target.type) {
+            case 'tracked-item':
+                return {
+                    type: 'tracked-item',
+                    trackedItemId: target.trackedItemId,
+                };
+            case 'fragment':
+                return {
+                    type: 'fragment',
+                    trackedItemId: target.trackedItemId,
+                    fragmentId: target.fragmentId,
+                };
+            case 'fragment-range':
+                return {
+                    type: 'fragment-range',
+                    trackedItemId: target.trackedItemId,
+                    fragmentId: target.fragmentId,
+                    start: target.start,
+                    end: target.end,
+                    quote: target.quote,
+                };
+            default: {
+                const _exhaustive: never = target;
+                throw new Error(
+                    `Unsupported annotation target: ${JSON.stringify(_exhaustive)}`
+                );
+            }
+        }
     }
 }
