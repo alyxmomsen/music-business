@@ -22,8 +22,12 @@ export class CommentsOrchestrator {
         return this.addCommentUseCase.execute(text, target, authorId);
     }
 
-    async update(id: string, text: string): Promise<Comment | null> {
-        return this.updateCommentUseCase.execute(id, text);
+    async update(
+        id: string,
+        text: string,
+        userId: string
+    ): Promise<Comment | null> {
+        return this.updateCommentUseCase.execute(id, text, userId);
     }
 
     async delete(id: string): Promise<void> {

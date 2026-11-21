@@ -82,12 +82,25 @@ export class CommentsController {
             if (typeof text !== 'string' || text.trim() === '') {
                 return res.status(400).json({ error: 'text is required' });
             }
-            const comment = await this.orchestrator.update(req.params.id, text);
+
+            const userId = (req as unknown as IAuthRequest).userId;
+            if (!userId) {
+                return res.status(401).json({ error: 'Unauthorized' });
+            }
+
+            const comment = await this.orchestrator.update(
+                req.params.id,
+                text,
+                userId
+            );
             if (!comment) {
                 return res.status(404).json({ error: 'Comment not found' });
             }
             res.json(comment.getState());
         } catch (err) {
+            if (err instanceof Error && err.message.includes('Only the author')) {
+                return res.status(403).json({ error: err.message });
+            }
             next(err);
         }
     };
