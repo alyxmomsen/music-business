@@ -1,4 +1,5 @@
-import { User, TUniqueId } from '../user';
+import { User } from '../user';
+import type { TUniqueId } from '../types/unique-id';
 
 export interface IUsersRepo {
     create(user: User): Promise<void>;

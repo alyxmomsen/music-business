@@ -2,17 +2,13 @@ import { readFile, writeFile } from 'fs/promises';
 import { resolve, normalize } from 'path';
 import { IUniqueIdGenerator } from '../domain/ports/uniqueIdGenerator';
 import { ITrackedItemsListRepo } from '../domain/ports/tracked-items-list-repo';
-import {
-    TrackedItem,
-    TTrackedItemState,
-    TTrackedItemUniqueId,
-} from '../domain/tracked-item';
+import { TrackedItem, TTrackedItemState } from '../domain/tracked-item';
 import { FragmentList } from '../domain/fragment-list';
 import { TWithId } from '../domain/types/common/with-id';
+import type { TUniqueId } from '../domain/types/unique-id';
 
 export class TrackedItemsListRepo implements ITrackedItemsListRepo {
-    private items: Map<TTrackedItemUniqueId, TWithId<TTrackedItemState>> =
-        new Map();
+    private items: Map<TUniqueId, TWithId<TTrackedItemState>> = new Map();
     private readonly path: string;
 
     constructor(
@@ -69,7 +65,7 @@ export class TrackedItemsListRepo implements ITrackedItemsListRepo {
         await this.persist();
     }
 
-    async removeOne(id: TTrackedItemUniqueId): Promise<void> {
+    async removeOne(id: TUniqueId): Promise<void> {
         this.items.delete(id);
         await this.persist();
     }
@@ -84,7 +80,7 @@ export class TrackedItemsListRepo implements ITrackedItemsListRepo {
         return Array.from(this.items.values()).map((s) => this.mapToDomain(s));
     }
 
-    async getById(id: TTrackedItemUniqueId): Promise<TrackedItem | null> {
+    async getById(id: TUniqueId): Promise<TrackedItem | null> {
         const state = this.items.get(id);
         if (state === undefined) return null;
         return this.mapToDomain(state);

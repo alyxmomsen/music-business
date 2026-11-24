@@ -1,4 +1,4 @@
-import { TUniqueId } from '../user';
+import type { TUniqueId } from '../types/unique-id';
 
 export type TCredentialsState = {
     userId: TUniqueId;

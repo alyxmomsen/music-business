@@ -1,7 +1,8 @@
 import { readFile, writeFile } from 'fs/promises';
 import { resolve, normalize } from 'path';
-import { User, TUserState, TUniqueId } from '../domain/user';
+import { User, TUserState } from '../domain/user';
 import { IUsersRepo } from '../domain/ports/users-repo';
+import type { TUniqueId } from '../domain/types/unique-id';
 
 export class JsonUsersRepo implements IUsersRepo {
     private items: Map<TUniqueId, TUserState> = new Map();

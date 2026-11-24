@@ -1,6 +1,6 @@
 import { readFile, writeFile } from 'fs/promises';
 import { resolve, normalize } from 'path';
-import { TUniqueId } from '../domain/user';
+import type { TUniqueId } from '../domain/types/unique-id';
 import { IUserProfilesRepo, TUserProfileState } from '../domain/ports/user-profiles-repo';
 
 export class JsonUserProfilesRepo implements IUserProfilesRepo {

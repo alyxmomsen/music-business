@@ -1,6 +1,6 @@
 import { readFile, writeFile } from 'fs/promises';
 import { resolve, normalize } from 'path';
-import { TUniqueId } from '../domain/user';
+import type { TUniqueId } from '../domain/types/unique-id';
 import { ICredentialsRepo, TCredentialsState } from '../domain/ports/credentials-repo';
 
 export class JsonCredentialsRepo implements ICredentialsRepo {
